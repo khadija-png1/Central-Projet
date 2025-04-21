@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Bienvenue sur {{appName}} !{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        
+        <link rel="stylesheet" href="{{ asset('template/vendors/typicons.font/font/typicons.css') }}">
+        <link rel="stylesheet" href="{{ asset('template/vendors/css/vendor.bundle.base.css') }}">
+        <link rel="stylesheet" href="{{ asset('template/css/vertical-layout-light/style.css') }}">
+
+        {# Icônes MDI #}
+        <link rel="stylesheet" href="{{ asset('template/vendors/mdi/css/materialdesignicons.min.css') }}">
+        
+        {% block stylesheets %}{% endblock %}
+
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+    </head>
+    <body>
+        <div class="container-scroller">
+            {% include "partials/_navbar.html.twig" %}
+
+            <div class="container-fluid page-body-wrapper">
+
+                {% include "partials/_sidebar.html.twig" %}
+
+                <div class="main-panel">
+                    {% block body %}{% endblock %}
+
+                    {% include "partials/_footer.html.twig" %}
+                </div>
+            </div>
+        </div>
+
+        <script src="{{ asset('template/vendors/js/vendor.bundle.base.js') }}"></script>
+        <script src="{{ asset('template/js/off-canvas.js') }}"></script>
+        <script src="{{ asset('template/js/hoverable-collapse.js') }}"></script>
+        <script src="{{ asset('template/js/template.js') }}"></script>
+        <script src="{{ asset('template/js/settings.js') }}"></script>
+        <script src="{{ asset('template/js/todolist.js') }}"></script>
+        <script src="{{ asset('template/vendors/progressbar.js/progressbar.min.js') }}"></script>
+        <script src="{{ asset('template/vendors/chart.js/Chart.min.js') }}"></script>
+        <script src="{{ asset('template/js/dashboard.js') }}"></script>
+
+        {% block scripts %}{% endblock %}
+    </body>
+</html>
