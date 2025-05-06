@@ -1,0 +1,63 @@
+
+
+{% block stylesheets %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+h2{
+    margin-right:70px;
+}
+.nom {
+
+    display: flex;
+    align-items: center; /* Aligne le label et l'input verticalement */
+    gap: 10px; /* Espace entre label et input */
+}
+.nom label {
+    width: 150px; /* ou une largeur fixe adaptée */
+    margin: 30px;;
+}
+.nom input {
+ flex: 1;
+    min-width: 300px; /* ajuste cette valeur selon tes besoins */
+    padding: 6px 10px;
+    font-size: 16px;}
+
+.popup-container  {
+    position: fixed;
+    top: 10%;
+    left: 20%;
+    width: 60%; /* ou 1000px si tu veux, mais évite trop grand */
+    max-height: 80vh; /* Limite à 80% de la hauteur de l’écran */
+    background: #bbbb;
+    padding: 20px;
+    border: none;
+    border-radius: 10px;
+    overflow-y: auto; /* active le scroll interne */
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    z-index: 999;
+    transition: all 0.3s ease;
+    scroll-behavior: smooth;
+}
+
+
+</style>
+{% endblock %}
+
+{% block body %}
+
+                    <h2 class="text-center mb-4">Supprimer un projet</h2>
+                            <div class="input-group">
+                                    <input type="text" id="nom" class="form-control" placeholder="Nom du projet à supprimer ">
+                            </div>
+     
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+
+
+</script>
+{% endblock %}

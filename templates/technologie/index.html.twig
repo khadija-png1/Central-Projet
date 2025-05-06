@@ -1,0 +1,202 @@
+{% extends 'base_dashboard.html.twig' %}
+{% block title %}Technologie {% endblock %}
+
+
+
+{% block stylesheets %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+h2{
+    color:#777977;
+    margin-left:20%;
+  
+}
+
+#box-title{
+    background:#cccc;
+}
+.popup-container  {
+    position: fixed;
+    top: 10%;
+    left: 20%;
+    width: 60%; /* ou 1000px si tu veux, mais évite trop grand */
+    max-height: 80vh; /* Limite à 80% de la hauteur de l’écran */
+    background: #bbbb;
+    padding: 20px;
+    border: none;
+    border-radius: 10px;
+    overflow-y: auto; /* active le scroll interne */
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    z-index: 999;
+    transition: all 0.3s ease;
+    scroll-behavior: smooth;
+}
+.fermer{
+
+    background-color:red;
+}
+
+.modal-dialog {
+    background-color:#eeee !important ;
+}
+.modal-content {
+    background-color: #f2f2f2; /* Ou la couleur que tu veux, ex: #dddddd, #fafafa, etc. */
+    color: #333; /* facultatif : couleur du texte */
+}
+.modal-header, .modal-body, .modal-footer {
+    background-color: transparent; /* ou un autre si tu veux des parties différentes */
+}
+
+
+
+</style>
+{% endblock %}
+
+{% block body %}
+<div class=" col col-md"> 
+        <button type="button" class="btn btn-info new ">
+                    <i class="bi bi-plus-lg fs-2"></i>Nouveau
+        </button>
+   <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                      <thead>
+                        <tr>
+                            <th>Nom  </th>
+                            <th>Version  </th>
+                            <th>Projets</th>
+                            <th>Actions</th>
+
+                        </tr>
+                    </thead>
+                      <tbody>
+                        {% for technolgie in technolgies %}
+
+                        <tr>
+                            <td>{{technolgie.nom}}</td>
+                            <td> {{technolgie.version}}</td>                            
+                            <td>
+                                {% for projet in technolgie.projets %}
+                                    <span>{{ projet.nom }}</span><br>
+                                 {% endfor %}            
+                            </td>
+                            <td>
+                                    
+                                    <div class="d-flex gap-2" >
+                                            <button type="button" class="btn btn-outline-secondary btn-rounded btn-icon update" data-id="{{ technolgie.id }}">
+                                                <i class="typcn typcn-edit text-infos"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary btn-rounded btn-icon delete" data-id="{{ technolgie.id }}">
+                                                <i class="mdi mdi-broom text-danger"></i>
+                                            </button>
+                                    </div>
+                            </td>
+                        </tr>
+                     {% endfor %}
+
+                       
+                    </tbody>
+                    </table>
+</div>
+</div>
+
+
+
+
+<!-- Modal pop_up-->
+<div class="modal fade" id="technologieModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark " data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-success">
+          <i class="mdi mdi-check"></i>Créer</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+//--------SCRIPT ADD  DEVELOPPEUR---------
+
+$(document).on('click', '.new', function () {
+    $.ajax({
+        type: "GET",
+        url: "/technologie/new",
+        cache: false,
+        success: function (data) {
+            // Injecter la réponse dans la modal
+            $('#technologieModal .modal-body').html(data);
+            // Afficher la modal
+            $('#technologieModal').modal('show');
+        },
+        error: function (e) {
+            console.error("Erreur lors du chargement :", e);
+        }
+    });
+});
+//--------SCRIPT  UPDATE DEVELOPPEUR---------
+$(document).on('click', '.update', function () {
+ let id = $(this).data('id');
+     console.log("ID récupéré :", id); // <-- pour voir si c'est vide
+if (!id) {
+        console.error("Aucun ID n’a été trouvé dans data-id !");
+        return;
+    }
+    $.ajax({
+        type: "GET",
+        url: "/technologie/update/" +id,
+        cache: false,
+        success: function (data) {
+            // Injecter la réponse dans la modal
+            $('#technologieModal .modal-body').html(data);
+            // Afficher la modal
+            $('#technologieModal').modal('show');
+        },
+        error: function (e) {
+            console.error("Erreur lors du chargement :", e);
+        }
+    });
+});
+//--------SCRIPT DELETE  DEVELOPPEUR---------
+$(document).on('click', '.delete', function () {
+
+     let id = $(this).data('id');
+    console.log("ID récupéré :", id); // <-- pour voir si c'est vide
+    if (!id) {
+        console.error("Aucun ID n’a été trouvé dans data-id !");
+        return;
+    }
+    $.ajax({
+        type: "GET",
+        url: "/technologie/delete/"+id,
+        cache: false,
+        success: function (data) {
+            // Injecter la réponse dans la modal
+            $('#technologieModal .modal-body').html(data);
+            // Afficher la modal
+            $('#technologieModal').modal('show');
+        },
+        error: function (e) {
+            console.error("Erreur lors du chargement :", e);
+        }
+    });
+});
+
+
+
+</script>
+
+{% endblock %}

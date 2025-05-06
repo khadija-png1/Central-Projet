@@ -30,7 +30,7 @@ class Developpeur
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $telephone = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(cascade: ['persist'])]
     private ?User $user = null;
 
     /**
@@ -64,6 +64,11 @@ class Developpeur
     public function getPrenom(): ?string
     {
         return $this->prenom;
+    }
+
+    public function __toString(): string
+    {
+        return $this->nom.' '.$this->prenom;
     }
 
     public function setPrenom(?string $prenom): static

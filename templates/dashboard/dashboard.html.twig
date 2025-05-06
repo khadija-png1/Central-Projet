@@ -1,0 +1,86 @@
+{% extends 'base_dashboard.html.twig' %}
+
+{% block title %}Tableau de bord {{appName}}{% endblock %}
+
+{% block body %}
+<div class="row">
+
+
+
+            <div class="col-lg-6 grid-margin grid-margin-lg-0 stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Pie chart</h4>
+                  <canvas id="pieChart"></canvas>
+                </div>
+              </div>
+            </div>
+         
+            <div class="col-lg-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Line chart</h4>
+                  <canvas id="lineChart"></canvas>
+                </div>
+              </div>
+            </div>
+<div class="table-responsive pt-3">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>
+                           Projets
+                          </th>
+                          <th>
+                            Technologies
+                          </th>
+                          <th>
+                            Développeurs
+                          </th>
+                          <th>
+                            Status
+                          </th>
+                          <th>
+                            Date expiration d'hebergement
+                          </th>
+                        </tr>
+                      </thead>
+                        <tbody>
+                                {% for project in projet %}
+                            <tr>
+                                <td>{{project.nom}}</td>
+
+                                <td>
+                                    {% for dev in project.developpeur %}
+                                        <span>{{ dev.nom }}</span><br>
+                                    {% endfor %}            
+                                </td>
+                
+                                <td>
+                                    {% for technologie in project.technologie %}
+                                        <span>{{ technologie.nom }}</span><br>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                    {% for hebergement in project.hebergement %}
+                                     <span>{{ hebergement.dateexpiration|date('d/m/Y H:i') }}</span><br>
+                                    {% endfor %}
+
+                                </td> 
+                            </tr>
+                                {% endfor %}
+
+                        
+                        </tbody>
+                    </table>
+</div>
+
+           
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('template/js/chart.js') }}"></script>
+{% endblock %}
