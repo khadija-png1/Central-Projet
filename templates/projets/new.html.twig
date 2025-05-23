@@ -1,18 +1,25 @@
-<h2 class="text-center mb-4">Ajouter un nouveau projet</h2>
-{{ form_start(form, {'action': path('app_projets_new'), 'method': 'POST'}) }}
-    {{ form_row(form.nom) }}
-    {{ form_row(form.type) }}
-    {{ form_row(form.description) }}
-    {{ form_row(form.accesEnvironnement) }}
-    {{ form_row(form.technologie) }}
-    {{ form_row(form.developpeur) }}                             
-    {{ form_row(form.hebergement) }}
-    {{ form_row(form.accesCodeSource) }}
-    {{ form_widget(form.submit) }}
-{{ form_end(form) }}
+{% block body %}
+    <h2 class="modal-title text-info w-50 text-center mb-4">Ajouter un projet</h2>
+        {{ form_start(form, {'action': path('app_projets_new'), 'method': 'POST'}) }}
+            {{ form_row(form.nom) }}
+            {{ form_row(form.type) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.accesEnvironnement) }}
+            {{ form_row(form.technologie) }}
+            {{ form_row(form.developpeur) }}                             
+            {{ form_row(form.hebergement) }}
+            {{ form_row(form.accesCodeSource) }}
+        <div class="modal-footer ">
+            {{ form_widget(form.Enregistrer, {'attr': {'class': 'btn btn-info'}}) }}
+        </div>
+        {{ form_end(form) }}
 
-<script>
-    $(document).ready(function() {
-        $('.select2').select2();
-    });
-</script>
+{% endblock  %}
+
+{% block script %}
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2();
+        });
+    </script>
+{% endblock %}

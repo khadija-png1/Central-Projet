@@ -1,202 +1,243 @@
 {% extends 'base_dashboard.html.twig' %}
-{% block title %}Technologie {% endblock %}
 
-
+{% block title %}Technologies {{appName}} {% endblock %}
 
 {% block stylesheets %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-h2{
-    color:#777977;
-    margin-left:20%;
-  
-}
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+        h2{
+            color:#777977;
+            margin-left:20%;
+        
+        }
+        .modal-content {
+            background-color: #f2f2f2; /* Ou la couleur que tu veux, ex: #dddddd, #fafafa, etc. */
+            color: #333; /* facultatif : couleur du texte */
+        }
+        .modal-header, .modal-body, .modal-footer {
+            background-color: transparent; /* ou un autre si tu veux des parties différentes */
+        }
+        .btn.btn-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 7px;
+        }   
+        .btn.btn-social-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 50px;
 
-#box-title{
-    background:#cccc;
-}
-.popup-container  {
-    position: fixed;
-    top: 10%;
-    left: 20%;
-    width: 60%; /* ou 1000px si tu veux, mais évite trop grand */
-    max-height: 80vh; /* Limite à 80% de la hauteur de l’écran */
-    background: #bbbb;
-    padding: 20px;
-    border: none;
-    border-radius: 10px;
-    overflow-y: auto; /* active le scroll interne */
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    z-index: 999;
-    transition: all 0.3s ease;
-    scroll-behavior: smooth;
-}
-.fermer{
+    }
 
-    background-color:red;
-}
-
-.modal-dialog {
-    background-color:#eeee !important ;
-}
-.modal-content {
-    background-color: #f2f2f2; /* Ou la couleur que tu veux, ex: #dddddd, #fafafa, etc. */
-    color: #333; /* facultatif : couleur du texte */
-}
-.modal-header, .modal-body, .modal-footer {
-    background-color: transparent; /* ou un autre si tu veux des parties différentes */
-}
-
-
-
-</style>
+    </style>
 {% endblock %}
 
 {% block body %}
-<div class=" col col-md"> 
-        <button type="button" class="btn btn-info new ">
-                    <i class="bi bi-plus-lg fs-2"></i>Nouveau
-        </button>
-   <div class="table-responsive">
-                    <table class="table table-striped table-bordered">
-                      <thead>
-                        <tr>
-                            <th>Nom  </th>
-                            <th>Version  </th>
-                            <th>Projets</th>
-                            <th>Actions</th>
-
-                        </tr>
-                    </thead>
-                      <tbody>
-                        {% for technolgie in technolgies %}
-
-                        <tr>
-                            <td>{{technolgie.nom}}</td>
-                            <td> {{technolgie.version}}</td>                            
-                            <td>
-                                {% for projet in technolgie.projets %}
-                                    <span>{{ projet.nom }}</span><br>
-                                 {% endfor %}            
-                            </td>
-                            <td>
-                                    
-                                    <div class="d-flex gap-2" >
-                                            <button type="button" class="btn btn-outline-secondary btn-rounded btn-icon update" data-id="{{ technolgie.id }}">
-                                                <i class="typcn typcn-edit text-infos"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-secondary btn-rounded btn-icon delete" data-id="{{ technolgie.id }}">
-                                                <i class="mdi mdi-broom text-danger"></i>
-                                            </button>
-                                    </div>
-                            </td>
-                        </tr>
-                     {% endfor %}
-
-                       
-                    </tbody>
-                    </table>
-</div>
-</div>
-
-
-
-
-<!-- Modal pop_up-->
-<div class="modal fade" id="technologieModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-dark " data-dismiss="modal">Fermer</button>
-        <button type="button" class="btn btn-success">
-          <i class="mdi mdi-check"></i>Créer</button>
-      </div>
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin grid-margin-lg-0 stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                {% include 'search/search.html.twig' with { 'form': form } %}
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center justify-content-end">
+                                <div>
+                                    <button class="btn btn-sm btn-info new d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm rounded-2" type="button">
+                                            <i class="bi bi-plus-lg fs-5 d-flex align-items-center"></i>
+                                            <span class="fw-semibold">Nouveau</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                                <!-- Tableau Global (Visible par défaut) -->
+                        <div id="global-table-container" class="table-responsive">
+                            {% include 'technologie/_search_result.html.twig' with { 'technologies': technologies } %}
+                        </div>
+                                <!-- Résultats de la recherche (Cachés par défaut) -->
+                        <div id="search-results" style="display:none;"></div>
+                            <!-- Spinner de chargement -->
+                        <div id="loading-spinner" class="text-center my-4" style="display: none;"> 
+                                <div class="spinner-border text-info" role="status">
+                                    <span class="visually-hidden">Chargement...</span>
+                                </div>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+    <!-- Modal pop_up-->
+    <div class="modal fade" id="technologieModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+                <h1 class="modal-title text-info w-100 text-center mb-4" id="name" style="display: none;"></h1>                  
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- modal de show  -->
+<div class="modal" tabindex="-1" id="show" >
+    <div class="modal-dialog modal-lg"> {# Exemple avec modal-lg #}
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-info w-100 text-center mb-4" id="showModalTitle"></h5>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
-<script>
+    <script>
 
-//--------SCRIPT ADD  DEVELOPPEUR---------
+    //--------SCRIPT ADD  technologie---------
 
-$(document).on('click', '.new', function () {
-    $.ajax({
-        type: "GET",
-        url: "/technologie/new",
-        cache: false,
-        success: function (data) {
-            // Injecter la réponse dans la modal
-            $('#technologieModal .modal-body').html(data);
-            // Afficher la modal
-            $('#technologieModal').modal('show');
-        },
-        error: function (e) {
-            console.error("Erreur lors du chargement :", e);
-        }
+    //--------------------SCRIPY AJAX---------------
+    // Ge
+    $(document).ready(function () {
+        $('#search-form').on('submit', function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const $searchResultsContainer = $('#search-results');
+            const $globalTableContainer = $('#global-table-container');
+            const $loadingSpinner = $('#loading-spinner');
+
+            // Affiche le spinner et cache le tableau global
+            $loadingSpinner.show();
+            $globalTableContainer.hide();
+
+            $.ajax({
+                url: '{{ path("app_index_technologie") }}', // Assure-toi que cette route renvoie uniquement le contenu du tableau
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+            
+                success: function (html) {
+                    $searchResultsContainer.html(html).show();
+                    $loadingSpinner.hide();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Erreur lors de la recherche:', error);
+                    $globalTableContainer.show();
+                    $loadingSpinner.hide();
+                }
+            });
+        });
     });
-});
-//--------SCRIPT  UPDATE DEVELOPPEUR---------
-$(document).on('click', '.update', function () {
- let id = $(this).data('id');
-     console.log("ID récupéré :", id); // <-- pour voir si c'est vide
-if (!id) {
-        console.error("Aucun ID n’a été trouvé dans data-id !");
-        return;
-    }
-    $.ajax({
-        type: "GET",
-        url: "/technologie/update/" +id,
-        cache: false,
-        success: function (data) {
-            // Injecter la réponse dans la modal
-            $('#technologieModal .modal-body').html(data);
-            // Afficher la modal
-            $('#technologieModal').modal('show');
-        },
-        error: function (e) {
-            console.error("Erreur lors du chargement :", e);
-        }
+    $(document).on('click', '.new', function () {
+        $('#name').hide();
+        $.ajax({
+            type: "GET",
+            url: "/technologie/new",
+            cache: false,
+            success: function (data) {
+                // Injecter la réponse dans la modal
+                $('#technologieModal .modal-body').html(data);
+                // Afficher la modal
+                $('#technologieModal').modal('show');
+            },
+            error: function (e) {
+                console.error("Erreur lors du chargement :", e);
+            }
+        });
     });
-});
-//--------SCRIPT DELETE  DEVELOPPEUR---------
-$(document).on('click', '.delete', function () {
+    //--------SCRIPT  UPDATE technologie---------
+    $(document).on('click', '.update', function () {
+        let id = $(this).data('id');
+        let nom = $(this).data('nom');
+        console.log("ID récupéré :", id); // <-- pour voir si c'est vide
+        console.log("Nom récupéré :", nom);
 
-     let id = $(this).data('id');
-    console.log("ID récupéré :", id); // <-- pour voir si c'est vide
-    if (!id) {
-        console.error("Aucun ID n’a été trouvé dans data-id !");
-        return;
-    }
-    $.ajax({
-        type: "GET",
-        url: "/technologie/delete/"+id,
-        cache: false,
-        success: function (data) {
-            // Injecter la réponse dans la modal
-            $('#technologieModal .modal-body').html(data);
-            // Afficher la modal
-            $('#technologieModal').modal('show');
-        },
-        error: function (e) {
-            console.error("Erreur lors du chargement :", e);
-        }
+        if (!id) {
+                console.error("Aucun ID n’a été trouvé dans data-id !");
+                return;
+            }
+        $('#name').text("Modifier : " + nom).show();           
+        $.ajax({
+            type: "GET",
+            url: "/technologie/update/" +id,
+            cache: false,
+            success: function (data) {
+                // Injecter la réponse dans la modal
+                $('#technologieModal .modal-body').html(data);
+                // Afficher la modal
+                $('#technologieModal').modal('show');
+            },
+            error: function (e) {
+                console.error("Erreur lors du chargement :", e);
+            }
+        });
     });
-});
+    //--------SCRIPT DELETE  technologie---------
+    $(document).on('click', '.delete', function () {
 
+        let id = $(this).data('id');
+        console.log("ID récupéré :", id); // <-- pour voir si c'est vide
+        if (!id) {
+            console.error("Aucun ID n’a été trouvé dans data-id !");
+            return;
+        }
+        $.ajax({
+            type: "GET",
+            url: "/technologie/delete/"+id,
+            cache: false,
+            success: function (data) {
+                // Injecter la réponse dans la modal
+                $('#technologieModal .modal-body').html(data);
+                // Afficher la modal
+                $('#technologieModal').modal('show');
+            },
+            error: function (e) {
+                console.error("Erreur lors du chargement :", e);
+            }
+        });
+    });
+    //--------SCRIPT show  technologie---------
+    $(document).on('click', '.show', function () {
+        let id = $(this).data('id');
+        let nom = $(this).data('nom');
+        console.log("ID récupéré :", id); // <-- pour voir si c'est vide
+        console.log("Nom récupéré :", nom);
 
+        if (!id) {
+            console.error("Aucun ID n’a été trouvé dans data-id !");
+            return;
+        }
+        $('#showModalTitle').text(nom);
 
-</script>
-
+        $.ajax({
+            type: "GET",
+            url: "/technologie/show/"+id,
+            cache: false,
+            success: function (data) {
+                // Injecter la réponse dans la modal
+                $('#show .modal-body').html(data);
+                // Afficher la modal
+                $('#show').modal('show');
+            },
+            error: function (e) {
+                console.error("Erreur lors du chargement :", e);
+            }
+        });
+    });
+    </script>
 {% endblock %}

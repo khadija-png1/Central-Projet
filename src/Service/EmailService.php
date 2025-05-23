@@ -1,42 +1,43 @@
 <?php
 
 namespace App\Service;
+
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
- use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerInterface;
 
 class EmailService
 {
-    public function __construct(private MailerInterface $mailer
-    , private LoggerInterface $logger)
+    private MailerInterface $mailer;
+    private LoggerInterface $logger;
+
+    public function __construct(MailerInterface $mailer, LoggerInterface $logger)
     {
-        // Ce constructeur peut être utilisé pour injecter d'autres services
+        $this->mailer = $mailer;
+        $this->logger = $logger;
     }
 
-
-
-
-    public function sendEmail(
-            
-        string $to='acharidhak@gmail.com',
-        string $content='<p>Test</p>',
-        string $subject='  Test',
-        
-    ):void
+    /**
+     * Envoie un e-mail.
+     *
+     * @param string $to Destinataire de l'e-mail
+     * @param string $content Contenu HTML de l'e-mail
+     * @param string $subject Sujet de l'e-mail
+     */
+    public function sendEmail(string $to = 'acharidhak@gmail.com', string $content = '<p>Test</p>', string $subject = 'Test'): void
     {
-    // Ajoute un log ici
-   
-    try {
-        $email = (new Email())
-            ->from('kbouallaoui@gmail.com')
-            ->to($to)
-            ->subject($subject)
-            ->html($content);
+        try {
+            $email = (new Email())
+                ->from('kbouallaoui@gmail.com')
+                ->to($to)
+                ->subject($subject)
+                ->html($content);
 
-        $this->mailer->send($email);
-        $this->logger->info("E-mail envoyé avec succès à $to.");
-    } catch (\Exception $e) {
-        $this->logger->error("Erreur lors de l'envoi de l'e-mail : " . $e->getMessage());
+            $this->mailer->send($email);
+
+            $this->logger->info("E-mail envoyé avec succès à {$to}.");
+        } catch (\Exception $e) {
+            $this->logger->error("Erreur lors de l'envoi de l'e-mail : " . $e->getMessage());
+        }
     }
-}
 }

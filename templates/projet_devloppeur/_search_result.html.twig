@@ -1,0 +1,33 @@
+{% if projets is not empty %}
+    <div class="d-flex justify-content-center">
+        <table class="table table-striped table-bordered">    
+        <thead>
+            <tr>
+                <th >Projets</th>
+
+                <th style="text-align: center;">Actions</th>  
+            </tr>
+        </thead>
+        <tbody>
+        {% for projet in projets  %}
+            <tr>
+                    <td>{{ projet.nom }}</td>
+                    <td style="text-align:center;">
+                        <button type="button" class="btn btn-outline-secondary btn-rounded btn-icon update" title="modifier" data-id="{{ projet.id }}" data-nom="{{ projet.nom }}">
+                            <i class="typcn typcn-edit text-info"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-rounded btn-icon show" title="plus d'informations " data-id="{{ projet.id }}" data-nom="{{ projet.nom }}">
+                            <i class="mdi mdi-eye text-info"></i>
+                        </button>
+                    </td>        
+            </tr>
+        {% endfor %}
+
+        </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-warning">Aucun projet asigné .</div>
+{% endif %}
+
+ 

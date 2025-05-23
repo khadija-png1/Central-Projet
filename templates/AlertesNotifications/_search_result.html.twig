@@ -1,0 +1,26 @@
+<table>
+  <tbody>
+    {% for notification in notifications %}
+      <tr id="notification-{{ notification.id }}">
+        <td>
+          <div class="alert alert-warning">
+            <a href="#" class="mark-read" data-id="{{ notification.id }}" style="text-decoration:none; color:inherit;">
+              <strong>{{ notification.title }}</strong>
+            </a>
+          </div>
+        </td>
+        <td>
+          <div class="alert alert-primary">
+            {{ notification.message }}
+          </div>
+        </td>
+      </tr>
+    {% else %}
+      <tr>
+        <td colspan="2" class="text-center">
+          Aucune notification pour le moment.
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

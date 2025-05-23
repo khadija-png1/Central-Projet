@@ -31,19 +31,21 @@ final class DeveloppeurController extends AbstractController
     public function new(ManagerRegistry $doctrine ,Request $request): Response
     {
                         $developpeur=new Developpeur();
+                        
                         $form=$this->createForm(DeveloppeurType::class ,$developpeur);
                         $form->remove('created');
                         $form->remove('updated');
                         $developpeur->setCreated(new \DateTime());
                         $developpeur->setUpdated(new \DateTime());
                         $form->handleRequest($request);
-if($form->isSubmitted() && $form->isValid()){
+        if($form->isSubmitted() && $form->isValid()){
                         $entityManager=$doctrine->getManager();
+                        
                         $entityManager->persist($developpeur);
                         $entityManager->flush();
          return $this->redirectToRoute('app_developpeur_index');
 
-}
+        }
         return $this->render('developpeur/new.html.twig', [
             'form' => $form->createView(),
             
@@ -105,5 +107,21 @@ if($form->isSubmitted() && $form->isValid()){
                     
                     
     }
-
+    #[Route('/show/{id}', name: 'app_developpeur_show', methods: ["GET"])]
+    public function show(ManagerRegistry $doctrine, int $id): Response
+    {
+        $entityManager = $doctrine->getManager();
+    
+        $developpeur = $entityManager->getRepository(Developpeur::class)->find($id);
+                
+        if (!$developpeur) {
+            throw $this->createNotFoundException('Aucun hébergement trouvé avec l\'id ' . $id);
+        }
+    
+        // Rendu de la vue avec les données du développeur
+        return $this->render('developpeur/show.html.twig', [
+            'developpeur' => $developpeur, // Utilisation du bon nom de variable
+        ]);
+    }
+    
  }                    

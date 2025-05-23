@@ -29,8 +29,9 @@ class HebergementType extends AbstractType
                 'widget' => 'single_text',
             ])
             
-            ->add('submit', SubmitType::class)
-
+            ->add('Enregistrer', SubmitType::class, [
+                'attr' => ['class' => 'btn btn-info']
+            ])
         ;
     }
 

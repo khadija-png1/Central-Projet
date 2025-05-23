@@ -24,20 +24,18 @@ class DeveloppeurType extends AbstractType
             ->add('created', null, [
                 'widget' => 'single_text',
             ])
+            ->add('user', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'email', // ou 'nom', selon ce que tu veux afficher
+                'placeholder' => 'Utilisateur',
+                'required' => true,
+            ])
             ->add('updated', null, [
                 'widget' => 'single_text',
             ])
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
+            ->add('Enregistrer', SubmitType::class, [
+                'attr' => ['class' => 'btn btn-info']
             ])
-            ->add('projets', EntityType::class, [
-                'class' => Projet::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
-            ->add('submit', SubmitType::class)
-
         ;
     }
 

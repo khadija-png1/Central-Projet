@@ -4,24 +4,41 @@ namespace App\Controller;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Technologie;
 use Symfony\Component\HttpFoundation\Request;
-
+use App\Form\SearchType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\TechnologieType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\TechnologieRepository;
+
 #[Route('/technologie')]
 final class TechnologieController extends AbstractController
 {
     #[Route('/', name: 'app_technologie_index')]
-    public function index(ManagerRegistry $doctrine): Response
-    {
+    public function index(ManagerRegistry $doctrine ,Request $request ): Response
+    {         
+        // Création du formulaire de recherche
+        $form = $this->createForm(SearchType::class);
+        $form->handleRequest($request);
+        
         $repository = $doctrine->getRepository(Technologie::class);
-        $technolgie = $repository->findAll();
+        $technologies = $repository->findAll();
 
+        // Traitement de la recherche
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            if (!empty($data['search'])) {
+                $technologies = $repository->createQueryBuilder('t')
+                    ->where('t.nom LIKE :search')
+                    ->setParameter('search', '%' . $data['search'] . '%')
+                    ->getQuery()
+                    ->getResult();
+            }
+        }
         return $this->render('technologie/index.html.twig', [
-            'technolgies' => $technolgie,
+            'technologies' => $technologies,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -98,5 +115,25 @@ if($form->isSubmitted() && $form->isValid()){
         return $this->render('technologie/delete.html.twig', [
             'technologies' => $technologie,
         ]);
+
+    }
+    
+    #[Route('/show/{id}', name: 'app_technologie_show',methods: ["GET","POST"])]
+    public function show( ManagerRegistry $doctrine ,  int $id  ): Response
+    {
+        $entityManager = $doctrine->getManager();
+                    
+        // Récupération du développeur par son ID
+         $technologie = $entityManager->getRepository(Technologie::class)->find($id);
+   
+                       // Véri
+ if(!$technologie){
+            throw $this->createNotFoundException('Technologie not found'.$id);
+        
+ }
+        return $this->render('technologie/show.html.twig', [
+            'technologies' => $technologie,
+        ]);
+
     }
 }

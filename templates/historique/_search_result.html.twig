@@ -1,0 +1,26 @@
+{% if historiques is not empty %}
+<div class="d-flex justify-content-center">
+    <table class="table table-striped table-bordered table-hover">
+        <thead >
+            <tr>
+                <th>Entité modifiée</th>
+                <th>Utilisateur</th>
+                <th>Date de modification</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for historique in historiques %}
+                <tr>
+                    <td>{{ historique.entiteModifiee }}</td>
+                    <td>{{ historique.user.email }}</td>
+                    <td>{{ historique.dateModification ? historique.dateModification|date("d-m-Y H:i:s") : 'Non définie' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+    <div class="alert alert-warning text-center">
+        Aucun historique trouvé avec ce nom d'entité.
+    </div>
+{% endif %}

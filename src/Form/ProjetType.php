@@ -54,8 +54,9 @@ class ProjetType extends AbstractType
                     'class' => 'select2',
                 ],
             ])
-            ->add('submit', SubmitType::class)
-
+            ->add('Enregistrer', SubmitType::class, [
+                'attr' => ['class' => 'btn btn-info']
+            ])
         ;
     }
 

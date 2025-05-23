@@ -24,8 +24,9 @@ class TechnologieType extends AbstractType
             ])
 
             
-            ->add('submit', SubmitType::class)
-        ;
+            ->add('Enregistrer', SubmitType::class, [
+                'attr' => ['class' => 'btn btn-info']
+            ])        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -14,11 +14,7 @@
         <style>
         /* Style de base pour les éléments de menu */
 
-.sidebar .nav:not(.sub-menu) > .nav-item > .nav-link {
 
-
-    color:blue;
-}
             .select2-container--default .select2-selection--single .select2-selection__arrow {
                 height: 100% !important;
             }
@@ -43,7 +39,7 @@
     </head>
     <body>
         <div class="container-scroller">
-        {% include "search/search.html.twig" %}
+
 
             {% include "partials/_navbar.html.twig" %}
 
@@ -71,5 +67,35 @@
         <script src="{{ asset('plugins/select2/select2.min.js') }}"></script>
 
         {% block scripts %}{% endblock %}
+
+        <script>
+ 
+                $(document).ready(function() {
+                    // CODE POUR FORECER  LA REINITIALISATION DES CLASSES BOOTSTRAP 
+                        $('[data-toggle="dropdown"]').dropdown();
+
+                    $(document).on('click', '.notification-item', function(e) {
+                        const notifId = $(this).data('id');
+                        $.ajax({
+                            url: '/notification/' + notifId + '/mark-read',
+                            method: 'POST',
+                            success: function(data) {
+                                if (data.statut === 'success') {
+                                    console.log('Notification marquée comme lue');
+                                } else {
+                                    console.error('Erreur lors du marquage comme lu');
+                                }
+                                
+                                refreshNotifications();
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Erreur Ajax :', error);
+                            }
+                        });
+                    });
+                });
+
+        </script>
+
     </body>
 </html>

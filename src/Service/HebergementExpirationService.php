@@ -1,12 +1,14 @@
 <?php
+
 namespace App\Service;
 
 use App\Entity\Hebergement;
+use App\Entity\Notification;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\NotificationService;
+use DateTime;
 
 class HebergementExpirationService
- 
-
 {
     private EntityManagerInterface $entityManager;
     private NotificationService $notificationService;
@@ -17,24 +19,74 @@ class HebergementExpirationService
         $this->notificationService = $notificationService;
     }
 
-    public function checkExpirationsAndNotify(): voidé
+    /**
+     * Vérifie les hébergements expirant bientôt, crée des notifications (sans doublon) et envoie un email.
+     *
+     * @return Notification[] Liste des notifications créées
+     */
+    public function checkExpirationsAndNotify(): array
     {
-        // Récupérer tous les hébergements
         $hebergements = $this->entityManager->getRepository(Hebergement::class)->findAll();
+        $notifications = [];
+        $aujourdhui = new \DateTime();
 
         foreach ($hebergements as $hebergement) {
             $dateExpiration = $hebergement->getDateExpiration();
-            $aujourdhui = new \DateTime();
+
             $interval = $aujourdhui->diff($dateExpiration);
 
-            // Si l'expiration est dans 15 jours, envoyer une notification
-            if ($interval->invert === 0 && $interval->days === 15) {
-                $this->notificationService->sendNotification(
-                    'Expiration proche',
-                    'L\'hébergement ' . $hebergement->getNom() . ' expire dans 15 jours.',
-                    'kbouallaoui@gmail.com' // Ton email ici
+            //$interval = $aujourdhui->diff($dateExpiration);
+            //$joursRestants = (int)$interval->format('%r%a'); // nombre de jours avec signe
+            $joursRestants = $interval->days;
+
+            if ($joursRestants == 15) {
+                $title = 'Expiration proche';
+                $message = sprintf(
+                    "⚠️ L'hébergement '%s' expire dans %d jour%s (le %s).",
+                    $hebergement->getFournisseur(),
+                    $joursRestants,
+                    $joursRestants > 1 ? 's' : '',
+                    $dateExpiration->format('d-m-Y')
                 );
+
+                // Vérifier s'il existe déjà une notification identique non lue pour cet hébergement
+                $existingNotification = $this->entityManager->getRepository(Notification::class)
+                    ->findOneBy([
+                        'hebergement' => $hebergement,
+                        'isRead' => true,
+                    ]);
+
+                if (!$existingNotification) {
+
+                    error_log("✅ Création d'une notification pour '{$hebergement->getFournisseur()}' (exp. dans {$joursRestants} jours)");
+
+                    $notification = new Notification();
+                    $notification->setTitle($title);
+                    $notification->setMessage($message);
+                    $notification->setCreatedAt(new \DateTime());
+                    $notification->setUpdatedAt(new \DateTime());
+                    $notification->setIsRead(false);
+
+                    // IMPORTANT : Lier la notification à l'hébergement
+                    $notification->setHebergement($hebergement);
+
+                    $this->entityManager->persist($notification);
+                    $notifications[] = $notification;
+
+                    // Envoi d'email
+
+                    $this->notificationService->sendNotification(
+                        $title,
+                        $message,
+                        'kbouallaoui@gmail.com'
+                    );
+                } else {
+                    error_log("ℹ️ Notification déjà existante pour '{$hebergement->getFournisseur()}' -> Pas de doublon.");
+                }
             }
         }
+
+        $this->entityManager->flush();
+        return $notifications;
     }
 }

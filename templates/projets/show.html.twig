@@ -1,0 +1,56 @@
+<table class="table table-striped table-bordered">
+    <tbody>
+        <tr>
+            <th>Développeurs</th>
+            <td>
+                {% if projet.developpeur is not empty %}
+                    {% for developpeur in projet.developpeur %}
+                        {{ developpeur.nom }} {{ developpeur.prenom }}
+                        <br>
+                        <br>
+                    {% endfor %}
+                {% else %}
+                    Aucun développeur associé à ce projet.
+                {% endif %}
+            </td>
+        </tr>
+
+        <tr>
+            <th>Technologies</th>
+            <td>
+                {% if projet.technologie is not empty %}
+                    {% for technologie in projet.technologie %}
+                        {{ technologie.nom }}
+                        <br>
+                        <br>
+                    {% endfor %}
+                {% else %}
+                    Aucune technologie associée à ce projet.
+                {% endif %}
+            </td>
+        </tr>
+
+        <tr>
+            <th>Hébergements</th>
+            <td>
+                {% if projet.hebergement is not empty %}
+                    {% for hebergement in projet.hebergement %}
+                        {{ hebergement.fournisseur }}
+                        <br>
+                        <br>
+                    {% endfor %}
+                {% else %}
+                    Aucun hébergement associé à ce projet.
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>Accès au code source</th>
+            <td>{{ projet.accesCodeSource }}</td>   
+        </tr>
+        <tr>
+            <th>Accès à l'environnement</th>
+            <td>{{ projet.accesEnvironnement }}</td>
+        </tr>
+    </tbody>
+</table>

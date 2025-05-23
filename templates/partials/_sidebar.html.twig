@@ -1,4 +1,4 @@
-<nav class="sidebar sidebar-offcanvas bg-white" id="sidebar">
+<nav class="sidebar sidebar-offcanvas " id="sidebar">
   <ul class="nav">
     <li class="nav-item  ">
       <p class="sidebar-menu-title">Menu</p>
@@ -27,12 +27,14 @@
         <span class="menu-title">Hébergements</span>
       </a>
     </li>
+    
     <li class="nav-item">
       <a class="nav-link " href="{{path('app_alertes_notifications')}}">
         <i class="mdi mdi-alarm-multiple menu-icon"></i>
         <span class="menu-title">Alertes & Notifications</span>
       </a>
     </li>
+
     <li class="nav-item">
       <a class="nav-link " href="{{path('app_developpeur_index')}}">
         <i class="mdi mdi-folder-account menu-icon"></i>
@@ -40,9 +42,15 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link  " href="#">
-        <i class="typcn typcn-user-outline menu-icon"></i>
+      <a class="nav-link" href="{{ path('app_mon_compte', {id: app.user.id}) }}">
+          <i class="typcn typcn-user-outline menu-icon"></i>
         <span class="menu-title">Mon compte</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link  " href="{{path('app_historique_index')}}">
+          <i class="typcn typcn-pencil menu-icon"></i>
+        <span class="menu-title">Historique de modification </span>
       </a>
     </li>
   </ul>

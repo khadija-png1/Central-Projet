@@ -4,134 +4,84 @@
 
 
 {% block stylesheets %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    h2{
-     color:#777977;
-      margin-left:20%;
-  
-    }
-
-
-   
-    #box-title{
-    background:#cccc;
-    }
-
-
-.popup-container  {
-    position: fixed;
-    top: 10%;
-    left: 20%;
-    width: 60%; /* ou 1000px si tu veux, mais évite trop grand */
-    max-height: 80vh; /* Limite à 80% de la hauteur de l’écran */
-    background: #bbbb;
-    padding: 20px;
-    border: none;
-    border-radius: 10px;
-    overflow-y: auto; /* active le scroll interne */
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    z-index: 999;
-    transition: all 0.3s ease;
-    scroll-behavior: smooth;
-}
-.fermer{
-
-    background-color:red;
-}
-
-.modal-dialog {
-    background-color:#eeee !important ;
-}
-.modal-content {
-    background-color: #f2f2f2; /* Ou la couleur que tu veux, ex: #dddddd, #fafafa, etc. */
-    color: #333; /* facultatif : couleur du texte */
-}
-.modal-header, .modal-body, .modal-footer {
-    background-color: transparent; /* ou un autre si tu veux des parties différentes */
-}
-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 10px;
-}
-
-
-</style>
+ <style>
+   .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+        h2{
+            color:#777977;
+            margin-left:20%;
+        
+        }
+        .modal-content {
+            background-color: #f2f2f2; /* Ou la couleur que tu veux, ex: #dddddd, #fafafa, etc. */
+            color: #333; /* facultatif : couleur du texte */
+        }
+        .modal-header, .modal-body, .modal-footer {
+            background-color: transparent; /* ou un autre si tu veux des parties différentes */
+        }
+        .btn.btn-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 7px;
+        }
+        .btn.btn-social-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 50px;
+        }
+        .footer{
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+        }
+     
+    </style>
 {% endblock %}
 
 {% block body %}
-<div class=" col col-md" id="box-title"> 
-        <button type="button" class="btn btn-success new ">
-                    <i class="bi bi-plus-lg fs-2"></i>
-        </button>
-    <div class="container-fluid page-body-wrapper" style="padding: 0; margin: 0;">
-    
-        <div class="main-panel" style="width: 100%;">
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-lg-12 grid-margin grid-margin-lg-0 stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                                {% include 'search/search.html.twig' with { 'form': form } %}
+                        </div>
+                        
+                        <div class="col-md-4 d-flex align-items-center justify-content-end">
+                            <div>
+                                <button class="btn btn-sm btn-info new d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm rounded-2" type="button">
+                                    <i class="bi bi-plus-lg fs-5 d-flex align-items-center"></i>
+                                    <span class="fw-semibold">Nouveau</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                             <!-- Tableau Global (Visible par défaut) -->
+                    <div id="global-table-container" class="table-responsive">
+                        {% include 'developpeur/_search_result.html.twig' with { 'developpeurs': developpeurs } %}
+                    </div>
 
-            <div class="table-responsive" style="width: 100%; padding: 0;">
-            
-                <table class="table table-dark" style="width: 100%; margin: 0;">
-                    <thead>
-                        <tr>
-                            <th>User_id  </th>
-                            <th>Nom  </th>
-                            <th>Prenom</th>
-                            <th>Email</th>
-                            <th>Téléphone</th>
-                            <th>Projets</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for devloppeur in developpeurs %}
-                        <tr>
-                            <td>
-                                {% for users in devloppeur.user %}
-                                    <span>{{ users.nom }}</span><br>
-                                 {% endfor %}            
-                            </td>
-                            <td> {{devloppeur.nom}}</td>
-                            <td>{{devloppeur.prenom}}</td>
-                            <td>{{devloppeur.email}}</td>
-                            <td>{{devloppeur.telephone}}</td>
-                            
-                            <td>
-                                {% for projet in devloppeur.projets %}
-                                    <li>{{ projet.nom }}</li><br>
-                                 {% endfor %}            
-                            </td>
+                            <!-- Résultats de la recherche (Cachés par défaut) -->
+                    <div id="search-results" style="display: none;"></div>
 
-                            
-                            
-                            <td>
-                                     <div class="btn-group" role="group">
-                                            <button type="button" class="btn btn-info update "data-id="{{ devloppeur.id }}">
-                                                    <div class="col-sm-6 col-md-4 col-lg-3" >
-                                                            <i class="mdi mdi-grease-pencil"></i>
-                                                    </div>
-                                            </button>
-                                            <button type="button" class="btn btn-danger delete" data-id="{{ devloppeur.id }}">
-                                                    <div class="col-sm-6 col-md-4 col-lg-3" >
-                                                            <i class="mdi mdi-broom"></i> 
-                                                    </div>
-                                            </button>
-                                    </div>
-                            </td>
-                        </tr>
-                     {% endfor %}
-
-                       
-                    </tbody>
-                </table>
+                            <!-- Spinner de chargement -->
+                    <div id="loading-spinner" class="text-center my-4" style="display: none;"> 
+                        <div class="spinner-border text-info" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                    </div>  
+                </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -147,13 +97,29 @@ footer {
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+       <h1 class="modal-title text-info w-100 text-center mb-4" id="name" style="display: none;"></h1>                  
+
       <div class="modal-body">
-        ...
+        
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- modal de show  -->
+<div class="modal" tabindex="-1" id="show" >
+  <div class="modal-dialog modal-lg"> {# Exemple avec modal-lg #}
+    <div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title text-info w-100 text-center mb-4" id="showModalTitle"></h5>
+    </div>
+
+      <div class="modal-body">
+
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-dark " data-dismiss="modal">Fermer</button>
-        <button type="button" class="btn btn-success">
-          <i class="mdi mdi-check"></i>Créer</button>
+        <button type="button" class="btn btn-info" data-dismiss="modal">Fermer</button>
       </div>
     </div>
   </div>
@@ -166,6 +132,8 @@ footer {
 //--------SCRIPT ADD  DEVELOPPEUR---------
 
 $(document).on('click', '.new', function () {
+                $('#name').hide();
+
     $.ajax({
         type: "GET",
         url: "/developpeur/new",
@@ -183,9 +151,10 @@ $(document).on('click', '.new', function () {
 });
 //--------SCRIPT  UPDATE DEVELOPPEUR---------
 $(document).on('click', '.update', function () {
-        let id = $(this).data('id');
-          console.log("ID récupéré :", id); // <-- pour voir si c'est vide
-
+       let id = $(this).data('id');
+            let nom = $(this).data('nom');
+            console.log("ID récupéré :", id); // <-- pour voir si c'est vide
+            console.log("Nom récupéré :", nom);
     if (!id) {
         console.error("Aucun ID n’a été trouvé dans data-id !");
         return;
@@ -230,7 +199,35 @@ $(document).on('click', '.delete', function () {
     });
 });
 
+   //--------SCRIPT DELETE  DEVELOPPEUR---------
+        $(document).on('click', '.show', function () {
+                let id = $(this).data('id');
+                let nom = $(this).data('nom');
 
+                console.log("ID récupéré :", id); // <-- pour voir si c'est vide
+                console.log("Nom récupéré :", nom);
+
+            if (!id) {
+                console.error("Aucun ID n’a été trouvé dans data-id !");
+                return;
+            }
+                $('#showModalTitle').text(nom);
+
+            $.ajax({
+                type: "GET",
+                url: "/developpeur/show/"+id,
+                cache: false,
+                success: function (data) {
+                    // Injecter la réponse dans la modal
+                    $('#show .modal-body').html(data);
+                    // Afficher la modal
+                    $('#show').modal('show');
+                },
+                error: function (e) {
+                    console.error("Erreur lors du chargement :", e);
+                }
+            });
+        });
 
 </script>
 

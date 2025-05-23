@@ -1,0 +1,44 @@
+<table class="table table-striped table-bordered">
+    <tbody>
+            <tr>
+                 <th>Type</th>
+                <td>{{ projet.type }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ projet.description }}</td>
+            </tr>
+            <tr>
+                <th>Accès au code source</th>
+                <td>{{ projet.accesCodeSource }}</td>
+            </tr>
+            <tr>
+                <th>Accès à l'environnement</th>
+                <td>{{ projet.accesEnvironnement }}</td>
+            </tr>
+            <tr>
+                <th>Technologies</th>
+                <td>      
+                    {% for technologie in projet.technologie  %}
+                        {{ technologie.nom }}
+                        <br>
+                        <br>
+                                {% else %}
+                        Aucune technologie associé à ce projet .
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>    
+                <th>Hébergements</th>      
+                <td>      
+                    {% for hebergement in projet.hebergement  %}
+                        {{ hebergement.fournisseur }}
+                        <br>
+                        <br>
+                                {% else %}
+                        Aucun fournisseur associé à ce projet .
+                    {% endfor %}
+                </td>
+            </tr>
+    </tbody>
+</table>

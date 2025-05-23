@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Hebergement
 {
     use Timestamp;
-    
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -28,7 +28,7 @@ class Hebergement
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $url = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateExpiration = null;
 
     /**
@@ -37,9 +37,16 @@ class Hebergement
     #[ORM\ManyToMany(targetEntity: Projet::class, mappedBy: 'hebergement')]
     private Collection $projets;
 
+    /**
+     * @var Collection<int, Notification>
+     */
+    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'hebergement')]
+    private Collection $notifications;
+
     public function __construct()
     {
         $this->projets = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -117,6 +124,36 @@ class Hebergement
     {
         if ($this->projets->removeElement($projet)) {
             $projet->removeHebergement($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Notification>
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): static
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications->add($notification);
+            $notification->setHebergement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): static
+    {
+        if ($this->notifications->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getHebergement() === $this) {
+                $notification->setHebergement(null);
+            }
         }
 
         return $this;
