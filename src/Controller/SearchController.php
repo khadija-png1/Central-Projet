@@ -195,12 +195,12 @@ public function index_historique(Request $request, EntityManagerInterface $em): 
     ]);
 }
 
-#[Route('/AlertesNotifications', name: 'app_alertes_notifications')]
-public function index_notification(
-    Request $request,
-    EntityManagerInterface $em,
-    HebergementExpirationService $expirationService // 👈 injection du service
-): Response
+    #[Route('/AlertesNotifications', name: 'app_alertes_notifications')]
+    public function index_notification(
+        Request $request,
+        EntityManagerInterface $em,
+        HebergementExpirationService $expirationService // 👈 injection du service
+        ): Response
 {
     // ✅ Appel du service pour déclencher la vérification
 

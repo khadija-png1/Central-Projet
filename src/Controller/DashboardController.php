@@ -28,6 +28,21 @@ final class DashboardController extends AbstractController{
         $repository = $doctrine->getRepository(hebergement::class);
         $hebergements = $repository->findAll();
 
+
+
+
+
+        $errorFile = __DIR__.'/../../var/url_errors.json';
+        if (file_exists($errorFile)) {
+            $errors = json_decode(file_get_contents($errorFile), true);
+            if (!empty($errors)) {
+                foreach ($errors as $url) {
+                    $this->addFlash('danger', "L'URL suivante est injoignable : $url");
+                }
+                // Optionnel : vider le fichier après affichage
+                unlink($errorFile);
+            }
+        }
         return $this->render('dashboard/dashboard.html.twig', [
             'projets'      => $projets,
             'developpeurs' => $developpeurs,

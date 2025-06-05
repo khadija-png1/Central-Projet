@@ -39,7 +39,7 @@ class HebergementExpirationService
             //$joursRestants = (int)$interval->format('%r%a'); // nombre de jours avec signe
             $joursRestants = $interval->days;
 
-            if ($joursRestants == 15) {
+            if ($joursRestants ==15) {
                 $title = 'Expiration proche';
                 $message = sprintf(
                     "⚠️ L'hébergement '%s' expire dans %d jour%s (le %s).",

@@ -33,6 +33,7 @@ class DeveloppeurType extends AbstractType
             ->add('updated', null, [
                 'widget' => 'single_text',
             ])
+            
             ->add('Enregistrer', SubmitType::class, [
                 'attr' => ['class' => 'btn btn-info']
             ])

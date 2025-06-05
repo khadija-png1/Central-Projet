@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DeveloppeurRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Developpeur
 {
     use Timestamp;

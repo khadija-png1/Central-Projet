@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription | {{ appName }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+  body {
+    background-color: #0d6efd; /* couleur primaire Bootstrap */
+    min-height: 100vh;
+  }
+
+  .auth-form-light {
+    background: white;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    border-radius: 12px;
+    animation: fadeInUp 1s ease forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper full-page-wrapper">
+            <div class="content-wrapper d-flex align-items-center auth px-0">
+                <div class="row w-100 mx-0">
+                    <div class="col-lg-4 mx-auto">
+                        <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+                            <h4 class="text-info mb-3">Bienvenue sur {{ appName }} !</h4>
+                            <h6 class="font-weight-light">Créez un compte pour continuer.</h6>
+
+                            {{ form_start(registrationForm) }}
+
+                                <div class="form-group">
+                                    {{ form_row(registrationForm.nom, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Nom'}}) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_row(registrationForm.prenom, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Prénom'}}) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_row(registrationForm.email, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Adresse email'}}) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_row(registrationForm.plainPassword, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Mot de passe'}}) }}
+                                </div>
+                                <div class="form-group form-check">
+                                    {{ form_row(registrationForm.agreeTerms) }}
+                                </div>
+
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-block btn-info btn-lg font-weight-medium auth-form-btn">
+                                        S'inscrire
+                                    </button>
+                                </div>
+
+                            {{ form_end(registrationForm) }}
+
+                            <div class="text-center mt-4 font-weight-light">
+                                Vous avez déjà un compte ? <a href="{{ path('app_login') }}" class="text-info">Se connecter</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -22,7 +22,9 @@ services:
         arguments:
             $mailer: '@mailer.mailer'
             $entityManager: '@doctrine.orm.entity_manager'
+ 
 
 twig:
     globals:
         notifications: '@App\Service\HebergementExpirationService'
+

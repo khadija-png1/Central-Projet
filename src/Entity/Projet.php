@@ -8,12 +8,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProjetRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Projet
 {
     use Timestamp;
-    
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -34,29 +36,31 @@ class Projet
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $accesEnvironnement = null;
 
-    /**
-     * @var Collection<int, Technologie>
-     */
+    #[ORM\Column(type: 'string', length: 20, options: ['default' => 'à faire'])]
+    #[Assert\Choice(choices: ['à faire', 'en cours', 'terminé'], message: 'Choix invalide pour le statut.')]
+    private string $status = 'à faire';
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $url = null;
+
     #[ORM\ManyToMany(targetEntity: Technologie::class, inversedBy: 'projets')]
     private Collection $technologie;
 
-    /**
-     * @var Collection<int, Developpeur>
-     */
     #[ORM\ManyToMany(targetEntity: Developpeur::class, inversedBy: 'projets')]
     private Collection $developpeur;
 
-    /**
-     * @var Collection<int, Hebergement>
-     */
     #[ORM\ManyToMany(targetEntity: Hebergement::class, inversedBy: 'projets')]
     private Collection $hebergement;
+
+    #[ORM\OneToMany(mappedBy: 'projet', targetEntity: Notification::class, cascade: ['remove'], orphanRemoval: true)]
+    private Collection $notifications;
 
     public function __construct()
     {
         $this->technologie = new ArrayCollection();
         $this->developpeur = new ArrayCollection();
         $this->hebergement = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -72,7 +76,6 @@ class Projet
     public function setNom(?string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -84,7 +87,6 @@ class Projet
     public function setType(?string $type): static
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -96,7 +98,6 @@ class Projet
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -108,7 +109,6 @@ class Projet
     public function setAccesCodeSource(?string $accesCodeSource): static
     {
         $this->accesCodeSource = $accesCodeSource;
-
         return $this;
     }
 
@@ -120,13 +120,31 @@ class Projet
     public function setAccesEnvironnement(?string $accesEnvironnement): static
     {
         $this->accesEnvironnement = $accesEnvironnement;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Technologie>
-     */
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?string $url): static
+    {
+        $this->url = $url;
+        return $this;
+    }
+
     public function getTechnologie(): Collection
     {
         return $this->technologie;
@@ -137,20 +155,15 @@ class Projet
         if (!$this->technologie->contains($technologie)) {
             $this->technologie->add($technologie);
         }
-
         return $this;
     }
 
     public function removeTechnologie(Technologie $technologie): static
     {
         $this->technologie->removeElement($technologie);
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Developpeur>
-     */
     public function getDeveloppeur(): Collection
     {
         return $this->developpeur;
@@ -161,20 +174,15 @@ class Projet
         if (!$this->developpeur->contains($developpeur)) {
             $this->developpeur->add($developpeur);
         }
-
         return $this;
     }
 
     public function removeDeveloppeur(Developpeur $developpeur): static
     {
         $this->developpeur->removeElement($developpeur);
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Hebergement>
-     */
     public function getHebergement(): Collection
     {
         return $this->hebergement;
@@ -185,13 +193,37 @@ class Projet
         if (!$this->hebergement->contains($hebergement)) {
             $this->hebergement->add($hebergement);
         }
-
         return $this;
     }
 
     public function removeHebergement(Hebergement $hebergement): static
     {
         $this->hebergement->removeElement($hebergement);
+        return $this;
+    }
+
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): static
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setProjet($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): static
+    {
+        if ($this->notifications->removeElement($notification)) {
+            if ($notification->getProjet() === $this) {
+                $notification->setProjet(null);
+            }
+        }
 
         return $this;
     }

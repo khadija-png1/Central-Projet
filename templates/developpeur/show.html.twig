@@ -3,7 +3,6 @@
         <tr> 
             <th>Projets</th> 
             <td>    
-                 
                 {% for projet in developpeur.projets %}
                     {{ projet.nom }}
                     <br>
@@ -11,7 +10,6 @@
                         {% else %}
                     Aucun projet associé.
                 {% endfor %}
-
             </td>
         </tr>
     </tbody>

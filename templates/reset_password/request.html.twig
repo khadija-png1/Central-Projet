@@ -9,7 +9,7 @@
                 <div class="row w-100 mx-0">
                     <div class="col-lg-4 mx-auto">
                         <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-                            <h4 class="text-primary mb-3">Réinitialisez votre mot de passe</h4>
+                            <h4 class="text-info mb-3">Réinitialisez votre mot de passe</h4>
                             {{ form_start(requestForm) }}
                                 {% for flash_error in app.flashes('reset_password_error') %}
                                     <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
@@ -22,7 +22,7 @@
                                 </div>
 
                                 <div class="mt-3">
-                                    <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">Envoyer</button>
+                                    <button class="btn btn-block btn-info btn-lg font-weight-medium auth-form-btn">Envoyer</button>
                                 </div>
                                 <div class="mt-3 text-center">
                                     <a href="{{ path('app_login') }}">Retour</a>

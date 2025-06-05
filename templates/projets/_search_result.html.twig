@@ -6,6 +6,7 @@
             <th>Nom</th>
             <th>Type</th>
             <th>Description</th>
+            <th style="text-align: center;">Statut</th>
             <th style="text-align: center;">Actions</th>       
         </tr>
     </thead>
@@ -15,6 +16,16 @@
                 <td>{{ projet.nom }}</td>
                 <td>{{ projet.type }}</td>
                 <td>{{ projet.description }}</td>
+                 <td style="text-align:center;">
+                    <span class="badge badge-pill 
+                        {% if projet.status == 'à faire' %}badge-primary
+                        {% elseif projet.status == 'en cours' %}badge-success
+                        {% elseif projet.status == 'terminé' %}badge-info
+                        {% else %}badge-primary{% endif %}
+                    ">
+                        {{ projet.status|capitalize }}
+                    </span>
+                </td>
                 <td style="text-align:center;">
                     <button type="button" class="btn btn-outline-secondary btn-rounded btn-icon update" title="modifier" data-id="{{ projet.id }}" data-nom="{{ projet.nom }}">
                         <i class="typcn typcn-edit text-info"></i>

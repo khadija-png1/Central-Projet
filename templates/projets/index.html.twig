@@ -39,7 +39,9 @@
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-md-8">
-                            {% include 'search/search.html.twig' with { 'form': form } %}
+                                {% if form is defined %}
+                                    {% include 'search/search.html.twig' with { 'form': form } %}
+                                {% endif %}
                             </div>
                             <div class="col-md-4 d-flex align-items-center justify-content-end">
                                 <div>
@@ -85,13 +87,16 @@
             </div>
         </div>
     </div>
-                            {% include 'projets/delete.html.twig' %}
+
+    <!--  delete modal  -->
+    {% include 'projets/delete.html.twig' %}
+
     <!-- modal de show  -->
 <div class="modal" tabindex="-1" id="show" >
     <div class="modal-dialog modal-lg"> {# Exemple avec modal-lg #}
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title text-info w-100 text-center mb-4" id="showModalTitle"></h5>
+            <h3 class="modal-title text-info w-100 text-center mb-4" id="showModalTitle"></h3>
         </div>
         <div class="modal-body">
         </div>
@@ -143,6 +148,8 @@
                 });
             });
         });
+        //----------SCRIPT POUR NEW PROJECT-------- 
+
         $(document).on('click', '.new', function () {
             $('#name').hide();
             $.ajax({
@@ -188,31 +195,45 @@
                 }
             });
         });
-
-        //----------SCRIPT POUR DELETE PROJECT-------- 
+        //--------SCRIPT DELETE  PROJECT---------
         $(document).on('click', '.delete', function () {
             let id = $(this).data('id');
+            let nom = $(this).data('nom');
+
             console.log("ID récupéré :", id); // <-- pour voir si c'est vide
+            console.log("Nom récupéré :", nom);
 
             if (!id) {
                 console.error("Aucun ID n’a été trouvé dans data-id !");
                 return;
             }
+            $('#deletemodal').text("Voulez-vous supprimer " + nom + " ? ");
+
+            // Injecter la réponse dans la modal
+            //$('#projectModal .modal-body').html(data);
+            // Afficher la modal
+            $("#id_projet").val(id);
+            $('#delete-form').attr('action', '/projets/delete/' + id);
+            $('#projectModalDelete').modal('show');
+
+            return;
 
             $.ajax({
                 type: "GET",
-                url: "/projets/delete/" +id,
+                url: "/projets/delete/"+id,
                 cache: false,
                 success: function (data) {
-                    
-                    $('#deletemodal').modal('show');
+                    // Injecter la réponse dans la modal
+                    $('#projectModal .modal-body').html(data);
+                    // Afficher la modal
+                    $('#projectModal').modal('show');
                 },
                 error: function (e) {
                     console.error("Erreur lors du chargement :", e);
                 }
             });
         });
-        //----------SCRIPT POUR DELETE PROJECT-------- 
+        //----------SCRIPT POUR show PROJECT-------- 
         $(document).on('click', '.show', function () {
             let id = $(this).data('id');
             let nom = $(this).data('nom');

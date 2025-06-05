@@ -84,6 +84,11 @@
         </div>
     </div>
     </div>
+
+<!-- modal de delete  -->
+
+{% include 'technologie/delete.html.twig' with { 'technologies': technologies } %}
+
     <!-- modal de show  -->
 <div class="modal" tabindex="-1" id="show" >
     <div class="modal-dialog modal-lg"> {# Exemple avec modal-lg #}
@@ -99,12 +104,11 @@
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block scripts %}
     <script>
-
-    //--------SCRIPT ADD  technologie---------
 
     //--------------------SCRIPY AJAX---------------
     // Ge
@@ -143,6 +147,7 @@
             });
         });
     });
+    //-----------------SCRIPTY NEW TECHNOLOGIE----------------
     $(document).on('click', '.new', function () {
         $('#name').hide();
         $.ajax({
@@ -187,30 +192,44 @@
             }
         });
     });
-    //--------SCRIPT DELETE  technologie---------
-    $(document).on('click', '.delete', function () {
+      //--------SCRIPT DELETE  TECHNOLOGIE---------
+        $(document).on('click', '.delete', function () {
+            let id = $(this).data('id');
+            let nom = $(this).data('nom');
 
-        let id = $(this).data('id');
-        console.log("ID récupéré :", id); // <-- pour voir si c'est vide
-        if (!id) {
-            console.error("Aucun ID n’a été trouvé dans data-id !");
-            return;
-        }
-        $.ajax({
-            type: "GET",
-            url: "/technologie/delete/"+id,
-            cache: false,
-            success: function (data) {
-                // Injecter la réponse dans la modal
-                $('#technologieModal .modal-body').html(data);
-                // Afficher la modal
-                $('#technologieModal').modal('show');
-            },
-            error: function (e) {
-                console.error("Erreur lors du chargement :", e);
+            console.log("ID récupéré :", id); // <-- pour voir si c'est vide
+            console.log("Nom récupéré :", nom);
+
+            if (!id) {
+                console.error("Aucun ID n’a été trouvé dans data-id !");
+                return;
             }
+            $('#deletemodal').text("Voulez-vous supprimer " + nom + " ? ");
+
+            // Injecter la réponse dans la modal
+            //$('#projectModal .modal-body').html(data);
+            // Afficher la modal
+            $("#id_technologie").val(id);
+            $('#delete-form').attr('action', '/technologie/delete/' + id);
+            $('#technologieModalDelete').modal('show');
+
+            return;
+
+            $.ajax({
+                type: "GET",
+                url: "/technologie/delete/"+id,
+                cache: false,
+                success: function (data) {
+                    // Injecter la réponse dans la modal
+                    $('#technologieModalDelete .modal-body').html(data);
+                    // Afficher la modal
+                    $('#technologieModalDelete').modal('show');
+                },
+                error: function (e) {
+                    console.error("Erreur lors du chargement :", e);
+                }
+            });
         });
-    });
     //--------SCRIPT show  technologie---------
     $(document).on('click', '.show', function () {
         let id = $(this).data('id');
@@ -239,5 +258,6 @@
             }
         });
     });
+
     </script>
 {% endblock %}

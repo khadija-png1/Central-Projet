@@ -30,6 +30,9 @@ class Notification
     #[ORM\ManyToOne(inversedBy: 'notifications')]
     private ?Hebergement $hebergement = null;
 
+    #[ORM\ManyToOne(inversedBy:  'notifications')]
+    private ?Projet $projet = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -101,4 +104,15 @@ class Notification
 
         return $this;
     }
+    public function getProjet(): ?Projet
+    {
+        return $this->projet;
+    }
+
+    public function setProjet(?Projet $projet): static
+    {
+        $this->projet = $projet;
+        return $this;
+    }
+
 }

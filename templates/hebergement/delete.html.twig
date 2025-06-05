@@ -1,80 +1,23 @@
+    <!-- Modal delete pop_up-->
+    <div class="modal fade" id="hebergemetModalDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header" >
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                    <h1 class="modal-title text-info w-100 text-center mb-4" id="name" style="display: none;"></h1>  
+                <div class="modal-body">
+                <h3 class="modal-title text-info w-100 text-center mb-4" id="deletemodal"></h3>              
+                    <form action="" method="get" id="delete-form">
+                        <input type="hidden" name="id_hebergement" id="id_hebergement">
+                         <div class="modal-footer">
+                        <button class="btn btn-info btn-sm delete" type="submit">Confirmer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> 
 
-
-{% block stylesheets %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-h2{
-    margin-right:70px;
-}
-.nom {
-
-    display: flex;
-    align-items: center; /* Aligne le label et l'input verticalement */
-    gap: 10px; /* Espace entre label et input */
-}
-.nom label {
-    width: 150px; /* ou une largeur fixe adaptée */
-    margin: 30px;;
-}
-.nom input {
- flex: 1;
-    min-width: 300px; /* ajuste cette valeur selon tes besoins */
-    padding: 6px 10px;
-    font-size: 16px;}
-
-.popup-container  {
-    position: fixed;
-    top: 10%;
-    left: 20%;
-    width: 60%; /* ou 1000px si tu veux, mais évite trop grand */
-    max-height: 80vh; /* Limite à 80% de la hauteur de l’écran */
-    background: #bbbb;
-    padding: 20px;
-    border: none;
-    border-radius: 10px;
-    overflow-y: auto; /* active le scroll interne */
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    z-index: 999;
-    transition: all 0.3s ease;
-    scroll-behavior: smooth;
-}
-.nom {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    max-width: 700px;
-    margin: auto;
-    flex-wrap: wrap;* Espace entre les deux champs */
-}
-
-.nom input {
-  width: 300px;
-    padding: 6px 10px;
-    font-size: 16px;
-}
-
-
-</style>
-{% endblock %}
-
-{% block body %}
-
-                        <h2 class="text-center mb-4">Résilier un developpeur</h2>
-                            <div class="nom">
-                                    <input type="text" id="nom" class="form-control" placeholder="Nom du fournissuer  ">
-                                     <input type="text" id="nom" class="form-control" placeholder="Type d'hébergement ">
-                           
-                            </div>
-     
-
-{% endblock %}
-
-{% block scripts %}
-<script>
-
-
-
-</script>
-{% endblock %}

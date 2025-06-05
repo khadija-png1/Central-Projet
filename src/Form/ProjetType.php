@@ -6,14 +6,12 @@ use App\Entity\Developpeur;
 use App\Entity\Hebergement;
 use App\Entity\Projet;
 use App\Entity\Technologie;
-
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProjetType extends AbstractType
 {
@@ -24,12 +22,25 @@ class ProjetType extends AbstractType
             ->add('type')
             ->add('description')
             ->add('accesCodeSource')
+            ->add('url')
             ->add('accesEnvironnement')
             ->add('created', null, [
                 'widget' => 'single_text',
             ])
             ->add('updated', null, [
                 'widget' => 'single_text',
+            ])
+            ->add('status', ChoiceType::class, [
+                'choices'  => [
+                    'À faire' => 'à faire',
+                    'En cours' => 'en cours',
+                    'Terminé' => 'terminé',
+                ],
+                'label' => 'Statut du projet',
+                'placeholder' => 'Choisissez un statut',
+                'attr' => [
+                    'class' => 'form-select'
+                ]
             ])
             ->add('technologie', EntityType::class, [
                 'class' => Technologie::class,
@@ -46,6 +57,7 @@ class ProjetType extends AbstractType
                     'class' => 'select2',
                 ],
             ])
+            
             ->add('hebergement', EntityType::class, [
                 'class' => Hebergement::class,
                 'choice_label' => 'fournisseur',

@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Form\SearchType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\TechnologieType;
+use App\Service\HistoriqueService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -41,7 +42,6 @@ final class TechnologieController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
     #[Route('/new', name: 'app_technologie_new' ,methods: ["GET","POST"])]
     public function new(ManagerRegistry $doctrine ,Request $request ): Response
     {
@@ -53,87 +53,86 @@ final class TechnologieController extends AbstractController
         $technologie->setCreated(new \DateTime());
         $technologie->setUpdated(new \DateTime());
         
-        $form->handleRequest($request);
+                $form->handleRequest($request);
 
-if($form->isSubmitted() && $form->isValid()){
-        $entityManager=$doctrine->getManager();
-        $entityManager->persist($technologie);
-        $entityManager->flush();
-return $this->redirectToRoute('app_technologie_index');
+        if($form->isSubmitted() && $form->isValid()){
+                $entityManager=$doctrine->getManager();
+                $entityManager->persist($technologie);
+                $entityManager->flush();
+        return $this->redirectToRoute('app_technologie_index');
 
-}
+        }
 
 
-        return $this->render('technologie/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+                return $this->render('technologie/new.html.twig', [
+                    'form' => $form->createView(),
+                ]);
     }
 
     #[Route('/update/{id}', name: 'app_technologie_update',methods: ["GET","POST"])]
-    public function update(ManagerRegistry $doctrine,Request $request , int $id ,EntityManagerInterface $entityManager): Response
-    {
-        $technologie=$entityManager->getRepository(Technologie::class)->find($id);
-
-if(!$technologie)
+    public function update(
+        ManagerRegistry $doctrine,
+            Request $request , 
+            int $id ,
+            EntityManagerInterface $entityManager,
+            HistoriqueService $historiqueService
+            ): Response
         {
-            throw $this->createNotFoundException('Technologie not found'.$id);
-        }
-        $form = $this->createForm(TechnologieType::class , $technologie);
-        $form->remove('created');
-        $form->remove('updated');
-        $form->handleRequest($request);
+            $technologie=$entityManager->getRepository(Technologie::class)->find($id);
 
-if($form->isSubmitted() && $form->isValid()){
-        $entityManager=$doctrine->getManager();
-        $technologie->setUpdated(new \DateTime());
-        $entityManager->flush();
-    return $this->redirectToRoute('app_technologie_index');
-}
-        return $this->render('technologie/update.html.twig', [
-            'form' => $form->createView(),
-            'technologies'=> $technologie,
-        ]);
+            if(!$technologie)
+                    {
+                        throw $this->createNotFoundException('Technologie not found'.$id);
+                    }
+                    $form = $this->createForm(TechnologieType::class , $technologie);
+                    $form->remove('created');
+                    $form->remove('updated');
+                    $form->handleRequest($request);
+
+            if($form->isSubmitted() && $form->isValid()){
+                    $entityManager=$doctrine->getManager();
+                    $technologie->setUpdated(new \DateTime());
+                    $historiqueService->log($technologie, 'modification');
+                    $entityManager->flush();
+                return $this->redirectToRoute('app_technologie_index');
+            }
+                    return $this->render('technologie/update.html.twig', [
+                        'form' => $form->createView(),
+                        'technologies'=> $technologie,
+                    ]);
     }
-
-
-
-
-    #[Route('/delete/{id}', name: 'app_technologie_delete',methods: ["GET","POST"])]
-    public function delete(TechnologieRepository $repository,  int $id , EntityManagerInterface $entityManager ): Response
+    #[Route('/delete/{id}', name: 'app_technologie_delete', methods: ['GET', 'POST'])]
+    public function delete(int $id, ManagerRegistry $doctrine): Response
     {
+        $entityManager = $doctrine->getManager();
+        $technologie = $entityManager->getRepository(Technologie::class)->find($id);
     
-        $technologie = $repository->find($id);  
- if(!$technologie){
-            throw $this->createNotFoundException('Technologie not found'.$id);
-        
- }
-
-
+        if (!$technologie) {
+            throw $this->createNotFoundException('Aucun technologie trouvé avec l\'id ' . $id);
+        }
+        // Supprimer le projet après avoir supprimé les dépendances
         $entityManager->remove($technologie);
         $entityManager->flush();
-
-        return $this->render('technologie/delete.html.twig', [
-            'technologies' => $technologie,
-        ]);
-
-    }
     
+        return $this->redirectToRoute('app_technologie_index');
+        
+    } 
     #[Route('/show/{id}', name: 'app_technologie_show',methods: ["GET","POST"])]
     public function show( ManagerRegistry $doctrine ,  int $id  ): Response
     {
-        $entityManager = $doctrine->getManager();
-                    
-        // Récupération du développeur par son ID
-         $technologie = $entityManager->getRepository(Technologie::class)->find($id);
-   
-                       // Véri
- if(!$technologie){
-            throw $this->createNotFoundException('Technologie not found'.$id);
-        
- }
-        return $this->render('technologie/show.html.twig', [
-            'technologies' => $technologie,
-        ]);
+            $entityManager = $doctrine->getManager();
+                        
+            // Récupération du développeur par son ID
+            $technologie = $entityManager->getRepository(Technologie::class)->find($id);
+    
+                        // Véri
+        if(!$technologie){
+                    throw $this->createNotFoundException('Technologie not found'.$id);
+                
+        }
+                return $this->render('technologie/show.html.twig', [
+                'technologies' => $technologie,
+            ]);
 
-    }
+        }
 }

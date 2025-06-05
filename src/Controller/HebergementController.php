@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Hebergement;
 use App\Form\SearchType;
+use App\Service\HistoriqueService;
 use App\Form\HebergementType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -76,7 +77,12 @@ final class HebergementController extends AbstractController
     }
 
     #[Route('/update/{id}', name: 'app_hebergement_update', methods: ["GET","POST"])]
-    public function update(Request $request, int $id): Response
+    public function update(
+        Request $request,
+        int $id,
+        EntityManagerInterface $entityManager,
+        HistoriqueService $historiqueService
+     ): Response
     {
         $hebergement = $this->entityManager->getRepository(Hebergement::class)->find($id);
         if (!$hebergement) {
@@ -90,6 +96,7 @@ final class HebergementController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $hebergement->setUpdated(new \DateTime());
+            $historiqueService->log($hebergement, 'modification');
             $this->entityManager->flush();
             return $this->redirectToRoute('app_hebergement_index');
         }
@@ -99,20 +106,28 @@ final class HebergementController extends AbstractController
             'hebergement' => $hebergement,
         ]);
     }
-
-    #[Route('/delete/{id}', name: 'app_hebergement_delete', methods: ["POST"])]
-    public function delete(int $id): Response
+    #[Route('/delete/{id}', name: 'app_hebergement_delete', methods: ['GET', 'POST'])]
+    public function delete(int $id, ManagerRegistry $doctrine): Response
     {
-        $hebergement = $this->entityManager->getRepository(Hebergement::class)->find($id);
+        $entityManager = $doctrine->getManager();
+        $hebergement = $entityManager->getRepository(Hebergement::class)->find($id);
+    
         if (!$hebergement) {
-            throw $this->createNotFoundException('Aucun hébergement trouvé avec l\'id ' . $id);
+            throw $this->createNotFoundException('Aucun hebergement trouvé avec l\'id ' . $id);
         }
-
-        $this->entityManager->remove($hebergement);
-        $this->entityManager->flush();
+    
+        // Supprimer les notifications liées au projet
+        foreach ($hebergement->getNotifications() as $notification) {
+            $entityManager->remove($notification);
+        }
+    
+        // Supprimer le projet après avoir supprimé les dépendances
+        $entityManager->remove($hebergement);
+        $entityManager->flush();
+    
         return $this->redirectToRoute('app_hebergement_index');
-    }
-
+        
+    } 
     #[Route('/show/{id}', name: 'app_hebergement_show', methods: ["GET"])]
     public function show(int $id): Response
     {

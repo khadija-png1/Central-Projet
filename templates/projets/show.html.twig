@@ -52,5 +52,29 @@
             <th>Accès à l'environnement</th>
             <td>{{ projet.accesEnvironnement }}</td>
         </tr>
+        <tr>
+            <th>Url</th>
+            <td>
+                <div class="d-flex align-items-center">
+                    <div class="me-3">{{ projet.url }}&nbsp;&nbsp;</div>
+                    <div>
+                    <a href="{{ path('projet_ping', { id: projet.id }) }}" class="btn btn-sm btn-outline-info">
+                        Tester ici
+                    </a>
+                    </div>
+                </div>
+            </td>
+   
+        </tr>
+
+           {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                        <div class="alert alert-{{ label }}">
+                            {{ message }}
+                        </div>
+                {% endfor %}
+            {% endfor %}
+    
+ 
     </tbody>
 </table>

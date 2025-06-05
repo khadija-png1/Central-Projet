@@ -83,11 +83,14 @@
       </div>
             <h1 class="modal-title text-info w-100 text-center mb-4" id="name" style="display: none;"></h1>                  
       <div class="modal-body">
-        ...
       </div>
     </div>
   </div>
 </div>
+
+<!-- modal de delet  -->
+{% include 'hebergement/delete.html.twig'%}
+
 <!-- modal de show  -->
 <div class="modal" tabindex="-1" id="show" >
  <div class="modal-dialog modal-lg"> {# Exemple avec modal-lg #}
@@ -148,6 +151,7 @@
                 });
             });
         });
+         //--------SCRIPT  UPDATE HEBERGEMNT---------
         $(document).on('click', '.new', function () {
             $('#name').hide();
             $.ajax({
@@ -165,7 +169,7 @@
                 }
             });
         });
-        //--------SCRIPT  UPDATE DEVELOPPEUR---------
+        //--------SCRIPT  UPDATE HEBERGEMNT---------
         $(document).on('click', '.update', function () {
             let id = $(this).data('id');
             let nom = $(this).data('nom');
@@ -191,30 +195,45 @@
                 }
             });
         });
-        //--------SCRIPT DELETE  DEVELOPPEUR---------
+        //--------SCRIPT DELETE  HEBERGEMNT---------
         $(document).on('click', '.delete', function () {
-                let id = $(this).data('id');
+            let id = $(this).data('id');
+            let nom = $(this).data('nom');
+
             console.log("ID récupéré :", id); // <-- pour voir si c'est vide
+            console.log("Nom récupéré :", nom);
+
             if (!id) {
                 console.error("Aucun ID n’a été trouvé dans data-id !");
                 return;
             }
+            $('#deletemodal').text("Voulez-vous supprimer " + nom + " ? ");
+
+            // Injecter la réponse dans la modal
+            //$('#projectModal .modal-body').html(data);
+            // Afficher la modal
+            $("#id_hebergement").val(id);
+            $('#delete-form').attr('action', '/hebergement/delete/' + id);
+            $('#hebergemetModalDelete').modal('show');
+
+            return;
+
             $.ajax({
                 type: "GET",
                 url: "/hebergement/delete/"+id,
                 cache: false,
                 success: function (data) {
                     // Injecter la réponse dans la modal
-                    $('#hebergementModal .modal-body').html(data);
+                    $('#hebergemetModalDelete .modal-body').html(data);
                     // Afficher la modal
-                    $('#hebergementModal').modal('show');
+                    $('#hebergemetModalDelete').modal('show');
                 },
                 error: function (e) {
                     console.error("Erreur lors du chargement :", e);
                 }
             });
         });
-        //--------SCRIPT DELETE  DEVELOPPEUR---------
+        //--------SCRIPT DELETE  HEBERGEMNT---------
         $(document).on('click', '.show', function () {
                 let id = $(this).data('id');
                 let nom = $(this).data('nom');

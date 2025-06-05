@@ -4,12 +4,11 @@ namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Projet;
-
 use App\Entity\Developpeur;
 use App\Form\SearchType;
 use App\Form\ProjetType;
 use Symfony\Bundle\SecurityBundle\Security;
-
+use App\Service\HistoriqueService;
 use App\Repository\ProjetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -75,7 +74,31 @@ class ProjetDevloppeurController extends AbstractController
 
     
     
+    #[Route('/update/{id}', name: 'app_projet_devloppeur_update', methods: ["GET", "POST"])]
+    public function update(
+        Request $request, 
+        Projet $projets, 
+        int $id , 
+        EntityManagerInterface $entityManager ,
+        HistoriqueService $historiqueService
+        ): Response
+    {
+        $form = $this->createForm(ProjetType::class, $projets);
+        $form->remove('created');
+        $form->remove('updated');
 
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $projets->setUpdated(new \DateTime());
+            $historiqueService->log($projets, 'modification');
+            $entityManager->flush();
+        }
+
+        return $this->render('projet_devloppeur/update.html.twig', [
+            'projets' => $projets,
+            'form' => $form->createView(),
+        ]);
+    }
 
 
 

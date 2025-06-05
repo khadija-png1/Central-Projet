@@ -13,9 +13,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-3">
-                        <div class="col-md-8">
-                            {% include 'search/search.html.twig' with { 'form': form } %}
-                        </div>
+                        
                     </div>
                     <div id="global-table-container" class="table-responsive">
                         {% include 'historique/_search_result.html.twig' with { 'historiques': historiques } %}
@@ -48,8 +46,9 @@
             const $globalTableContainer = $('#global-table-container');
             const $loadingSpinner = $('#loading-spinner');
 
-            // Affiche le spinner et cache le tableau global
+            // Affiche le spinner et cache les résultats actuels
             $loadingSpinner.show();
+            $searchResultsContainer.hide();
             $globalTableContainer.hide();
 
             $.ajax({
@@ -67,9 +66,9 @@
                 },
                 error: function (xhr, status, error) {
                     console.error('Erreur lors de la recherche:', error);
+                    $loadingSpinner.hide();
                     $globalTableContainer.show();
                     $searchResultsContainer.hide();
-                    $loadingSpinner.hide();
                 }
             });
         });

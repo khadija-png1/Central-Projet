@@ -6,47 +6,45 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait Timestamp
 {
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTime $created = null;
 
-   #[ORM\Column(type: 'datetime')]
-   private $created;
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTime $updated = null;
 
-   #[ORM\Column(type: 'datetime')]
-   private $updated;
+    public function getCreated(): ?\DateTime
+    {
+        return $this->created;
+    }
 
-   public function getCreated(): ?\DateTimeInterface
-   {
-      return $this->created;
-   }
+    public function setCreated(\DateTime $created): self
+    {
+        $this->created = $created;
+        return $this;
+    }
 
-   public function setCreated(\DateTimeInterface $created): self
-   {
-      $this->created = $created;
+    public function getUpdated(): ?\DateTime
+    {
+        return $this->updated;
+    }
 
-      return $this;
-   }
+    public function setUpdated(\DateTime $updated): self
+    {
+        $this->updated = $updated;
+        return $this;
+    }
 
-   public function getUpdated(): ?\DateTimeInterface
-   {
-      return $this->updated;
-   }
+    #[ORM\PrePersist]
+    public function setTimestampsOnPrePersist(): void
+    {
+        $now = new \DateTime();
+        $this->created = $now;
+        $this->updated = $now;
+    }
 
-   public function setUpdated(\DateTimeInterface $updated): self
-   {
-      $this->updated = $updated;
-
-      return $this;
-   }
-
-   /**
-    * Automatiser les dates created et updated
-   */
-   #[ORM\PrePersist]
-   #[ORM\PreUpdate]
-   public function updateTimestamps(): void
-   {
-      if ($this->getCreated() === null) {
-         $this->setCreated(new \DateTimeImmutable());
-      }
-      $this->setUpdated(new \DateTimeImmutable());
-   }
+    #[ORM\PreUpdate]
+    public function setUpdatedTimestamp(): void
+    {
+        $this->updated = new \DateTime();
+    }
 }

@@ -7,22 +7,33 @@ namespace App\Controller;
 use App\Entity\Notification;
 use App\Repository\HebergementRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\HistoriqueService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use App\Service\HebergementExpirationService;
+use App\Service\UrlService;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AlertesNotificationsController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
     private HebergementExpirationService $hebergementExpirationService;
+    private UrlService $urlService;
 
-    public function __construct(EntityManagerInterface $entityManager, HebergementExpirationService $hebergementExpirationService)
+
+    public function __construct(
+        EntityManagerInterface $entityManager, 
+        HebergementExpirationService $hebergementExpirationService , 
+        UrlService $urlService
+        )
     {
         $this->entityManager = $entityManager;
+        $this->urlService = $urlService;
         $this->hebergementExpirationService = $hebergementExpirationService;
     }
+
+
 
     #[Route('/check-expirations', name: 'app_check_expirations')]
     public function checkExpirations(): JsonResponse
@@ -36,7 +47,18 @@ class AlertesNotificationsController extends AbstractController
             'notificationsCount' => count($notifications),
         ]);
     }
+    #[Route('/check-url', name: 'app_chek_url')]
+    public function checkUrls(): JsonResponse
+    {
+        // Lancer la vérification et la création des notifications + envoi mail
+        $notifications = $this->urlService->checkUrls();
 
+        return new JsonResponse([
+            'success' => true,
+            'message' => count($notifications) . ' notification(s) créée(s).',
+            'notificationsCount' => count($notifications),
+        ]);
+    }
     #[Route('/AlertesNotifications', name: 'app_alertes_notifications')]
     public function showNotifications(): Response
     {
@@ -49,8 +71,11 @@ class AlertesNotificationsController extends AbstractController
     }
 
     #[Route('/notification/{id}/mark-read', name: 'notification_mark_read', methods: ['POST'])]
-    public function markAsRead(int $id, HebergementRepository $hebergementRepository): JsonResponse
-    {
+    public function markAsRead(int $id, 
+        HebergementRepository $hebergementRepository,
+        HistoriqueService $historiqueService
+        ): JsonResponse
+        {
         $notification = $this->entityManager->getRepository(Notification::class)->find($id);
 
         if (!$notification) {
@@ -69,6 +94,7 @@ class AlertesNotificationsController extends AbstractController
                 $notification->setIsRead(true);
                 $notification->setUpdatedAt(new \DateTime());
             } */
+            $historiqueService->log($notification, 'modification');
 
             $this->entityManager->flush();
         }

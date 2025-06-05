@@ -52,7 +52,7 @@ class NotificationSubscriber implements EventSubscriberInterface
             }
         }
 
-//------------CE CODE AFFICHE LES LISTE DES NOTIFICATIONS ----------------
+        //------------CE CODE AFFICHE LES LISTE DES NOTIFICATIONS ----------------
         $this->twig->addGlobal('notifications', $notifications);
         $this->twig->addGlobal('notification_count', $unreadCount);
     }

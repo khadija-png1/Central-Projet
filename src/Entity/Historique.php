@@ -15,12 +15,14 @@ class Historique
     #[ORM\Column]
     private ?int $id = null;
 
-    // ✅ Correction pour inclure la date et l'heure
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date_modification = null;
 
     #[ORM\Column(length: 255)]
     private ?string $entiteModifiee = null;
+
+    #[ORM\Column(length: 50)]
+    private string $action = 'modification'; // valeur par défaut pour éviter null
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'historiques')]
     #[ORM\JoinColumn(nullable: false)]
@@ -50,6 +52,17 @@ class Historique
     public function setEntiteModifiee(string $entiteModifiee): static
     {
         $this->entiteModifiee = $entiteModifiee;
+        return $this;
+    }
+
+    public function getAction(): string
+    {
+        return $this->action;
+    }
+
+    public function setAction(string $action): static
+    {
+        $this->action = $action;
         return $this;
     }
 
